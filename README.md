@@ -5,6 +5,7 @@
 
 ## Link Colab https://colab.research.google.com/drive/1-6fGhw_nT36-_NOSgCv7ohQ0ehv_JFnZ?usp=sharing
 #### (Tem o notebook que eu também rodei na minha máquina, mas é o mesmo código)
+## Link video https://drive.google.com/drive/folders/1VX30ZKDkOgsXu6rpAW3dEnvrgzloZfhU?usp=sharing
 
 Este repositório contém o código de um Sistema Baseado em Conhecimento (SBC) estruturado em regras **IF-THEN** utilizando a biblioteca Python `experta`. O sistema atua como um consultor virtual de FitTech, inferindo planos de treino, dieta e suplementação personalizados a partir de dados físicos e objetivos fornecidos pelo usuário.
 
