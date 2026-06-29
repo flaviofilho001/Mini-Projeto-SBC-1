@@ -6,7 +6,7 @@
 ### John Victor de Oliveira Atanazio
 
 ## Link colab (https://colab.research.google.com/drive/13HHPU22172A5HcXe2sIK5CSMPw5pQ_nA?usp=sharing)
-## Link Vídeo ()
+## Link Vídeo (https://youtu.be/N954M57mO6Q)
 
 # 🎛️ SBC FitTech Fuzzy - Controlador Temático de Nutrição Esportiva
 
