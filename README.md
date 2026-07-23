@@ -1,48 +1,90 @@
-# 🏋️‍♂️ SBC FitTech - Sistema Especialista de Regras para Dietas e Treinos
+# Mini-Projeto 3 — FitTech Knowledge Graph
 
-# Projeto 2
+**Autores:** Flávio Mesquita Marinho Filho e John Victor de Oliveira Atanazio
 
-### Flávio Mesquita Marinho Filho
-### John Victor de Oliveira Atanazio
+## Resumo
 
-## Link colab (https://colab.research.google.com/drive/13HHPU22172A5HcXe2sIK5CSMPw5pQ_nA?usp=sharing)
-## Link Vídeo (https://youtu.be/N954M57mO6Q)
+Este projeto incrementa os Mini-Projetos 1 e 2 do SBC FitTech. O domínio de dietas, treinos, perfis metabólicos, objetivos e suplementação foi convertido em uma base de conhecimento RDF/RDFS/OWL, armazenada em Turtle e consultada em Python com `rdflib` e SPARQL.
 
-# 🎛️ SBC FitTech Fuzzy - Controlador Temático de Nutrição Esportiva
+> A base é acadêmica e serve para demonstrar modelagem semântica. Ela não substitui avaliação médica, nutricional ou de educação física.
 
-Este módulo faz parte do **Mini-Projeto 2**, reescrevendo a lógica do sistema especialista anterior baseada em regras booleanas severas para uma abordagem baseada em **Lógica Fuzzy (Mamdani)**, utilizando a biblioteca `scikit-fuzzy`.
+## Link Colab (https://colab.research.google.com/drive/1SaJE0dJUo6dIXgQwGSoGN8UWtOZoYjyy?usp=sharing)
+## Link Vídeo (https://drive.google.com/file/d/1AtlSR-krV6qEJeJnVcA729AwUps8bsf6/view?usp=sharing)
 
-## 🎯 Descrição do Domínio e Justificativa
-No ambiente de FitTech real, as características humanas e objetivos não são discretos. Uma pessoa não deixa de ser "ectomorfa" e se torna "mesomorfa" de forma abrupta; existe uma zona de transição contínua. 
-O sistema analisa a intensidade do **Objetivo Calórico** e o comportamento do **Metabolismo** do usuário para computar o **Ajuste Calórico Diário** ideal (em kcal) necessário para a sua dieta.
+## Arquivos
 
-### Variáveis e Termos Linguísticos
-1. **Objetivo (Input: 0 a 10):** Representa a direção da meta calórica do usuário.
-   * `perda`: Funções trapezoidais na faixa inferior.
-   * `manutencao`: Função triangular centralizada no valor 5.
-   * `ganho`: Função trapezoidal na faixa superior.
-2. **Metabolismo (Input: 0 a 10):** Taxa de eficiência metabólica basal (Equivalência matemática aos biotipos clássicos).
-   * `rapido` (Ectomorfo): Dificuldade intrínseca de reter energia.
-   * `misto` (Mesomorfo): Equilíbrio metabólico.
-   * `lento` (Endomorfo): Facilidade alta de acúmulo lipídico.
-3. **Ajuste Calórico (Output: -1000 a +1000 kcal):** Resposta real de calorias acrescidas ou removidas na dieta do indivíduo.
-   * `deficit_alto`, `moderado`, `superavit_alto`.
+- `fittech.ttl`: ontologia e indivíduos.
+- `MiniProjeto3_FitTech.ipynb`: carregamento, validações, consultas `g.triples()` e consultas/updates SPARQL.
+- `requirements.txt`: dependência do projeto.
 
-## 📜 Base de Regras (Matriz Combinatória Completa)
-Para garantir que o espaço de entradas não apresente nenhuma lacuna (gaps), mapeamos a matriz $3 \times 3$ completa gerando 9 regras consistentes:
+## Taxonomia principal
 
-* **R1:** SE objetivo é *perda* E metabolismo é *rapido* ENTÃO ajuste é *moderado* (Protege contra o catabolismo).
-* **R2:** SE objetivo é *perda* E metabolismo é *misto* ENTÃO ajuste é *deficit_alto*.
-* **R3:** SE objetivo é *perda* E metabolismo é *lento* ENTÃO ajuste é *deficit_alto*.
-* **R4:** SE objetivo é *manutencao* E metabolismo é *rapido* ENTÃO ajuste é *moderado*.
-* **R5:** SE objetivo é *manutencao* E metabolismo é *misto* ENTÃO ajuste é *moderado*.
-* **R6:** SE objetivo é *manutencao* E metabolismo é *lento* ENTÃO ajuste é *deficit_alto*.
-* **R7:** SE objetivo é *ganho* E metabolismo é *rapido* ENTÃO ajuste é *superavit_alto*.
-* **R8:** SE objetivo é *ganho* E metabolismo é *misto* ENTÃO ajuste é *superavit_alto*.
-* **R9:** SE objetivo é *ganho* E metabolismo é *lento* ENTÃO ajuste é *moderado* (Abordagem de ganho limpo).
+A raiz é `EntidadeFitTech`. Abaixo dela existem `Pessoa`, `PerfilMetabolico`, `Objetivo`, `Plano` e `Suplemento`. A hierarquia possui mais de dois níveis, por exemplo:
 
-## 🚀 Instruções de Execução e Reprodução
-1. Certifique-se de possuir o ambiente Python configurado com suporte ao pip.
-2. Instale a biblioteca necessária executando:
-   ```bash
-   pip install scikit-fuzzy numpy
+- `EntidadeFitTech > Pessoa > Profissional > Nutricionista`
+- `EntidadeFitTech > Pessoa > Profissional > PersonalTrainer`
+- `EntidadeFitTech > PerfilMetabolico > PerfilRapido`
+- `EntidadeFitTech > Objetivo > Hipertrofia`
+- `EntidadeFitTech > Plano > PlanoAlimentar`
+
+## Principais relações
+
+Usuários possuem perfil, objetivo, plano alimentar, plano de treino, suplementos e profissionais responsáveis. Os dados incluem nome, idade, peso, altura, experiência, restrição alimentar, calorias e frequência de treino.
+
+## Construções OWL utilizadas
+
+A base usa, com justificativa no domínio:
+
+- `owl:inverseOf`: `possuiPerfil/perfilDe` e `orientadoPor/orienta`.
+- `owl:FunctionalProperty`: um usuário possui um perfil e um objetivo; pessoas possuem um único nome cadastrado.
+- `owl:InverseFunctionalProperty`: um perfil individual identifica seu usuário.
+- `owl:SymmetricProperty`: relação entre planos complementares.
+- `owl:TransitiveProperty`: derivação entre versões de planos.
+- `owl:disjointWith`: plano alimentar versus plano de treino e perfil rápido versus perfil lento.
+
+## Consultas implementadas
+
+O notebook contém 5 consultas com `g.triples()` e 11 operações SPARQL:
+
+1. `SELECT` de usuários e objetivos.
+2. `SELECT` com `FILTER` por idade.
+3. `SELECT` com `ORDER BY` por peso.
+4. `SELECT` com agregação e `GROUP BY`.
+5. `ASK`.
+6. `CONSTRUCT`.
+7. `INSERT DATA`.
+8. Verificação do `INSERT`.
+9. `DELETE DATA`.
+10. `DELETE/INSERT WHERE`.
+11. Verificação final dos updates.
+
+## Execução
+
+### Jupyter/VS Code
+
+```bash
+python -m venv .venv
+# Windows: .venv\Scripts\activate
+# Linux/macOS: source .venv/bin/activate
+pip install -r requirements.txt
+jupyter notebook MiniProjeto3_FitTech.ipynb
+```
+
+Execute as células em ordem. O arquivo `fittech.ttl` precisa permanecer na mesma pasta do notebook.
+
+### Google Colab
+
+1. Abra o notebook no Colab.
+2. Envie `fittech.ttl` para a área de arquivos da sessão.
+3. Execute todas as células em ordem.
+
+O notebook instala `rdflib` automaticamente quando necessário.
+
+## Requisitos atendidos
+
+- Mais de 8 classes, com hierarquia de pelo menos dois níveis abaixo da raiz.
+- Mais de 10 propriedades, incluindo pelo menos 5 de objeto e 5 de dados.
+- Mais de 25 indivíduos e mais de 50 triplas.
+- Mais de 5 construções OWL justificadas.
+- 5 consultas com `g.triples()`.
+- Mais de 8 consultas/operações SPARQL, cobrindo `SELECT`, `FILTER`, `ORDER BY`, agregação, `ASK`, `CONSTRUCT`, `INSERT`, `DELETE` e `DELETE/INSERT`.
