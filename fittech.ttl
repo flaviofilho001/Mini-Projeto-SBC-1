@@ -1,0 +1,304 @@
+@prefix fit: <http://example.org/fittech#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+fit:FitTechOntology a owl:Ontology ;
+    rdfs:label "Ontologia FitTech"@pt ;
+    rdfs:comment "Base de conhecimento sobre perfis, objetivos, planos alimentares, treinos e suplementos."@pt .
+
+# ========================
+# Classes e taxonomia
+# ========================
+fit:EntidadeFitTech a owl:Class ; rdfs:label "Entidade FitTech"@pt .
+
+fit:Pessoa a owl:Class ;
+    rdfs:subClassOf fit:EntidadeFitTech ;
+    rdfs:label "Pessoa"@pt .
+
+fit:Usuario a owl:Class ;
+    rdfs:subClassOf fit:Pessoa ;
+    rdfs:label "Usuário"@pt .
+
+fit:Profissional a owl:Class ;
+    rdfs:subClassOf fit:Pessoa ;
+    rdfs:label "Profissional"@pt .
+
+fit:Nutricionista a owl:Class ;
+    rdfs:subClassOf fit:Profissional ;
+    rdfs:label "Nutricionista"@pt .
+
+fit:PersonalTrainer a owl:Class ;
+    rdfs:subClassOf fit:Profissional ;
+    rdfs:label "Personal trainer"@pt .
+
+fit:PerfilMetabolico a owl:Class ;
+    rdfs:subClassOf fit:EntidadeFitTech ;
+    rdfs:label "Perfil metabólico"@pt .
+
+fit:PerfilRapido a owl:Class ;
+    rdfs:subClassOf fit:PerfilMetabolico ;
+    rdfs:label "Perfil metabólico rápido"@pt .
+
+fit:PerfilMisto a owl:Class ;
+    rdfs:subClassOf fit:PerfilMetabolico ;
+    rdfs:label "Perfil metabólico misto"@pt .
+
+fit:PerfilLento a owl:Class ;
+    rdfs:subClassOf fit:PerfilMetabolico ;
+    rdfs:label "Perfil metabólico lento"@pt .
+
+fit:Objetivo a owl:Class ;
+    rdfs:subClassOf fit:EntidadeFitTech ;
+    rdfs:label "Objetivo"@pt .
+
+fit:Emagrecimento a owl:Class ;
+    rdfs:subClassOf fit:Objetivo ;
+    rdfs:label "Emagrecimento"@pt .
+
+fit:Manutencao a owl:Class ;
+    rdfs:subClassOf fit:Objetivo ;
+    rdfs:label "Manutenção"@pt .
+
+fit:Hipertrofia a owl:Class ;
+    rdfs:subClassOf fit:Objetivo ;
+    rdfs:label "Hipertrofia"@pt .
+
+fit:Plano a owl:Class ;
+    rdfs:subClassOf fit:EntidadeFitTech ;
+    rdfs:label "Plano"@pt .
+
+fit:PlanoAlimentar a owl:Class ;
+    rdfs:subClassOf fit:Plano ;
+    rdfs:label "Plano alimentar"@pt .
+
+fit:PlanoTreino a owl:Class ;
+    rdfs:subClassOf fit:Plano ;
+    rdfs:label "Plano de treino"@pt .
+
+fit:Suplemento a owl:Class ;
+    rdfs:subClassOf fit:EntidadeFitTech ;
+    rdfs:label "Suplemento"@pt .
+
+# Classes disjuntas: um plano alimentar não é um plano de treino.
+fit:PlanoAlimentar owl:disjointWith fit:PlanoTreino .
+# Perfis extremos são tratados como categorias distintas.
+fit:PerfilRapido owl:disjointWith fit:PerfilLento .
+
+# ========================
+# Propriedades de objeto
+# ========================
+fit:possuiPerfil a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:domain fit:Usuario ;
+    rdfs:range fit:PerfilMetabolico ;
+    rdfs:label "possui perfil"@pt ;
+    owl:inverseOf fit:perfilDe .
+
+fit:perfilDe a owl:ObjectProperty, owl:InverseFunctionalProperty ;
+    rdfs:domain fit:PerfilMetabolico ;
+    rdfs:range fit:Usuario ;
+    rdfs:label "perfil de"@pt .
+
+fit:temObjetivo a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:domain fit:Usuario ;
+    rdfs:range fit:Objetivo ;
+    rdfs:label "tem objetivo"@pt .
+
+fit:seguePlanoAlimentar a owl:ObjectProperty ;
+    rdfs:domain fit:Usuario ;
+    rdfs:range fit:PlanoAlimentar ;
+    rdfs:label "segue plano alimentar"@pt .
+
+fit:seguePlanoTreino a owl:ObjectProperty ;
+    rdfs:domain fit:Usuario ;
+    rdfs:range fit:PlanoTreino ;
+    rdfs:label "segue plano de treino"@pt .
+
+fit:usaSuplemento a owl:ObjectProperty ;
+    rdfs:domain fit:Usuario ;
+    rdfs:range fit:Suplemento ;
+    rdfs:label "usa suplemento"@pt .
+
+fit:orientadoPor a owl:ObjectProperty ;
+    rdfs:domain fit:Usuario ;
+    rdfs:range fit:Profissional ;
+    rdfs:label "orientado por"@pt ;
+    owl:inverseOf fit:orienta .
+
+fit:orienta a owl:ObjectProperty ;
+    rdfs:domain fit:Profissional ;
+    rdfs:range fit:Usuario ;
+    rdfs:label "orienta"@pt .
+
+fit:planoRelacionado a owl:ObjectProperty, owl:SymmetricProperty ;
+    rdfs:domain fit:Plano ;
+    rdfs:range fit:Plano ;
+    rdfs:label "plano relacionado"@pt .
+
+fit:derivaDePlano a owl:ObjectProperty, owl:TransitiveProperty ;
+    rdfs:domain fit:Plano ;
+    rdfs:range fit:Plano ;
+    rdfs:label "deriva de plano"@pt .
+
+# ========================
+# Propriedades de dados
+# ========================
+fit:nome a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain fit:Pessoa ;
+    rdfs:range xsd:string ;
+    rdfs:label "nome"@pt .
+
+fit:idade a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain fit:Usuario ;
+    rdfs:range xsd:integer ;
+    rdfs:label "idade"@pt .
+
+fit:pesoKg a owl:DatatypeProperty ;
+    rdfs:domain fit:Usuario ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "peso em kg"@pt .
+
+fit:alturaM a owl:DatatypeProperty ;
+    rdfs:domain fit:Usuario ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "altura em metros"@pt .
+
+fit:experiencia a owl:DatatypeProperty ;
+    rdfs:domain fit:Usuario ;
+    rdfs:range xsd:string ;
+    rdfs:label "experiência"@pt .
+
+fit:restricaoAlimentar a owl:DatatypeProperty ;
+    rdfs:domain fit:Usuario ;
+    rdfs:range xsd:string ;
+    rdfs:label "restrição alimentar"@pt .
+
+fit:caloriasDiarias a owl:DatatypeProperty ;
+    rdfs:domain fit:PlanoAlimentar ;
+    rdfs:range xsd:integer ;
+    rdfs:label "calorias diárias"@pt .
+
+fit:frequenciaSemanal a owl:DatatypeProperty ;
+    rdfs:domain fit:PlanoTreino ;
+    rdfs:range xsd:integer ;
+    rdfs:label "frequência semanal"@pt .
+
+fit:duracaoMinutos a owl:DatatypeProperty ;
+    rdfs:domain fit:PlanoTreino ;
+    rdfs:range xsd:integer ;
+    rdfs:label "duração em minutos"@pt .
+
+fit:doseDiaria a owl:DatatypeProperty ;
+    rdfs:domain fit:Suplemento ;
+    rdfs:range xsd:string ;
+    rdfs:label "dose diária"@pt .
+
+fit:registroProfissional a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain fit:Profissional ;
+    rdfs:range xsd:string ;
+    rdfs:label "registro profissional"@pt .
+
+# ========================
+# Objetivos e perfis
+# ========================
+fit:objetivoEmagrecer a fit:Emagrecimento ; rdfs:label "Redução de gordura corporal"@pt .
+fit:objetivoManter a fit:Manutencao ; rdfs:label "Manutenção da composição corporal"@pt .
+fit:objetivoHipertrofia a fit:Hipertrofia ; rdfs:label "Ganho de massa muscular"@pt .
+
+fit:perfilAna a fit:PerfilRapido .
+fit:perfilBruno a fit:PerfilLento .
+fit:perfilCarla a fit:PerfilMisto .
+fit:perfilDiego a fit:PerfilRapido .
+fit:perfilElisa a fit:PerfilLento .
+fit:perfilFabio a fit:PerfilMisto .
+fit:perfilGabriela a fit:PerfilRapido .
+fit:perfilHugo a fit:PerfilLento .
+
+# ========================
+# Profissionais
+# ========================
+fit:nutriMarina a fit:Nutricionista ;
+    fit:nome "Marina Lopes" ;
+    fit:registroProfissional "CRN-12345" .
+
+fit:nutriPaulo a fit:Nutricionista ;
+    fit:nome "Paulo Nunes" ;
+    fit:registroProfissional "CRN-98765" .
+
+fit:personalRafael a fit:PersonalTrainer ;
+    fit:nome "Rafael Lima" ;
+    fit:registroProfissional "CREF-44551" .
+
+fit:personalSofia a fit:PersonalTrainer ;
+    fit:nome "Sofia Alves" ;
+    fit:registroProfissional "CREF-77882" .
+
+# ========================
+# Planos alimentares
+# ========================
+fit:dietaHipercalorica a fit:PlanoAlimentar ;
+    rdfs:label "Dieta hipercalórica padrão"@pt ;
+    fit:caloriasDiarias 3000 .
+
+fit:dietaHipercaloricaSemLactose a fit:PlanoAlimentar ;
+    rdfs:label "Dieta hipercalórica sem lactose"@pt ;
+    fit:caloriasDiarias 2900 ;
+    fit:derivaDePlano fit:dietaHipercalorica .
+
+fit:dietaHipocalorica a fit:PlanoAlimentar ;
+    rdfs:label "Dieta hipocalórica"@pt ;
+    fit:caloriasDiarias 1800 .
+
+fit:dietaManutencao a fit:PlanoAlimentar ;
+    rdfs:label "Dieta de manutenção"@pt ;
+    fit:caloriasDiarias 2300 .
+
+# ========================
+# Planos de treino
+# ========================
+fit:treinoABC a fit:PlanoTreino ;
+    rdfs:label "Treino ABC"@pt ;
+    fit:frequenciaSemanal 3 ;
+    fit:duracaoMinutos 60 .
+
+fit:treinoAB a fit:PlanoTreino ;
+    rdfs:label "Treino AB com cardio"@pt ;
+    fit:frequenciaSemanal 4 ;
+    fit:duracaoMinutos 70 .
+
+fit:treinoABCDE a fit:PlanoTreino ;
+    rdfs:label "Treino ABCDE avançado"@pt ;
+    fit:frequenciaSemanal 5 ;
+    fit:duracaoMinutos 80 ;
+    fit:derivaDePlano fit:treinoABC .
+
+fit:treinoFullBody a fit:PlanoTreino ;
+    rdfs:label "Treino full body"@pt ;
+    fit:frequenciaSemanal 3 ;
+    fit:duracaoMinutos 50 .
+
+fit:dietaHipercalorica fit:planoRelacionado fit:treinoABC .
+fit:dietaHipocalorica fit:planoRelacionado fit:treinoAB .
+fit:dietaManutencao fit:planoRelacionado fit:treinoFullBody .
+
+# ========================
+# Suplementos
+# ========================
+fit:creatina a fit:Suplemento ; rdfs:label "Creatina"@pt ; fit:doseDiaria "3 a 5 g" .
+fit:wheyProtein a fit:Suplemento ; rdfs:label "Whey protein"@pt ; fit:doseDiaria "25 a 30 g" .
+fit:proteinaVegetal a fit:Suplemento ; rdfs:label "Proteína vegetal"@pt ; fit:doseDiaria "25 a 30 g" .
+fit:hipercalorico a fit:Suplemento ; rdfs:label "Hipercalórico"@pt ; fit:doseDiaria "1 porção" .
+fit:cafeina a fit:Suplemento ; rdfs:label "Cafeína"@pt ; fit:doseDiaria "100 a 200 mg" .
+
+# ========================
+# Usuários
+# ========================
+fit:ana a fit:Usuario ; fit:nome "Ana" ; fit:idade 22 ; fit:pesoKg 58.5 ; fit:alturaM 1.65 ; fit:experiencia "iniciante" ; fit:restricaoAlimentar "nenhuma" ; fit:possuiPerfil fit:perfilAna ; fit:temObjetivo fit:objetivoHipertrofia ; fit:seguePlanoAlimentar fit:dietaHipercalorica ; fit:seguePlanoTreino fit:treinoABC ; fit:usaSuplemento fit:creatina, fit:hipercalorico ; fit:orientadoPor fit:nutriMarina, fit:personalRafael .
+fit:bruno a fit:Usuario ; fit:nome "Bruno" ; fit:idade 31 ; fit:pesoKg 96.2 ; fit:alturaM 1.78 ; fit:experiencia "avancado" ; fit:restricaoAlimentar "nenhuma" ; fit:possuiPerfil fit:perfilBruno ; fit:temObjetivo fit:objetivoEmagrecer ; fit:seguePlanoAlimentar fit:dietaHipocalorica ; fit:seguePlanoTreino fit:treinoABCDE ; fit:usaSuplemento fit:wheyProtein, fit:cafeina ; fit:orientadoPor fit:nutriPaulo, fit:personalSofia .
+fit:carla a fit:Usuario ; fit:nome "Carla" ; fit:idade 27 ; fit:pesoKg 67.0 ; fit:alturaM 1.70 ; fit:experiencia "intermediario" ; fit:restricaoAlimentar "intolerancia_lactose" ; fit:possuiPerfil fit:perfilCarla ; fit:temObjetivo fit:objetivoManter ; fit:seguePlanoAlimentar fit:dietaManutencao ; fit:seguePlanoTreino fit:treinoFullBody ; fit:usaSuplemento fit:proteinaVegetal ; fit:orientadoPor fit:nutriMarina, fit:personalRafael .
+fit:diego a fit:Usuario ; fit:nome "Diego" ; fit:idade 19 ; fit:pesoKg 63.4 ; fit:alturaM 1.80 ; fit:experiencia "iniciante" ; fit:restricaoAlimentar "intolerancia_lactose" ; fit:possuiPerfil fit:perfilDiego ; fit:temObjetivo fit:objetivoHipertrofia ; fit:seguePlanoAlimentar fit:dietaHipercaloricaSemLactose ; fit:seguePlanoTreino fit:treinoABC ; fit:usaSuplemento fit:creatina, fit:proteinaVegetal ; fit:orientadoPor fit:nutriPaulo, fit:personalRafael .
+fit:elisa a fit:Usuario ; fit:nome "Elisa" ; fit:idade 35 ; fit:pesoKg 82.7 ; fit:alturaM 1.68 ; fit:experiencia "iniciante" ; fit:restricaoAlimentar "nenhuma" ; fit:possuiPerfil fit:perfilElisa ; fit:temObjetivo fit:objetivoEmagrecer ; fit:seguePlanoAlimentar fit:dietaHipocalorica ; fit:seguePlanoTreino fit:treinoAB ; fit:usaSuplemento fit:wheyProtein ; fit:orientadoPor fit:nutriMarina, fit:personalSofia .
+fit:fabio a fit:Usuario ; fit:nome "Fabio" ; fit:idade 29 ; fit:pesoKg 74.8 ; fit:alturaM 1.74 ; fit:experiencia "intermediario" ; fit:restricaoAlimentar "nenhuma" ; fit:possuiPerfil fit:perfilFabio ; fit:temObjetivo fit:objetivoManter ; fit:seguePlanoAlimentar fit:dietaManutencao ; fit:seguePlanoTreino fit:treinoFullBody ; fit:usaSuplemento fit:creatina ; fit:orientadoPor fit:nutriPaulo, fit:personalRafael .
+fit:gabriela a fit:Usuario ; fit:nome "Gabriela" ; fit:idade 24 ; fit:pesoKg 55.9 ; fit:alturaM 1.62 ; fit:experiencia "avancado" ; fit:restricaoAlimentar "vegetariana" ; fit:possuiPerfil fit:perfilGabriela ; fit:temObjetivo fit:objetivoHipertrofia ; fit:seguePlanoAlimentar fit:dietaHipercaloricaSemLactose ; fit:seguePlanoTreino fit:treinoABCDE ; fit:usaSuplemento fit:proteinaVegetal, fit:creatina ; fit:orientadoPor fit:nutriMarina, fit:personalSofia .
+fit:hugo a fit:Usuario ; fit:nome "Hugo" ; fit:idade 42 ; fit:pesoKg 88.3 ; fit:alturaM 1.76 ; fit:experiencia "intermediario" ; fit:restricaoAlimentar "nenhuma" ; fit:possuiPerfil fit:perfilHugo ; fit:temObjetivo fit:objetivoEmagrecer ; fit:seguePlanoAlimentar fit:dietaHipocalorica ; fit:seguePlanoTreino fit:treinoAB ; fit:usaSuplemento fit:cafeina ; fit:orientadoPor fit:nutriPaulo, fit:personalSofia .
